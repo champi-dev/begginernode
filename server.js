@@ -1,25 +1,15 @@
-const http = require('http')
-const url = require('url')
+var http = require("http");
+var url = require("url");
 
-const start = (route, handle) => {
-  const port = 8888
-  http.createServer(onRequest).listen(port)
-  console.log(`Server started on port ${port}`)
-
-  function onRequest (req, res) {
-    const pathname = url.parse(req.url).pathname
-
-    req.setEncoding("utf8")
-
-    let postData
-    req.addListener('data', (chunk) => {
-      postData += chunk
-    })
-
-    req.addListener('end', () => {
-      route(handle, pathname, res, postData)
-    })
+function start(route, handle) {
+  function onRequest(request, response) {
+    var pathname = url.parse(request.url).pathname;
+    console.log("Request for " + pathname + " received.");
+    route(handle, pathname, response, request);
   }
+
+  http.createServer(onRequest).listen(8888);
+  console.log("Server has started.");
 }
 
-exports.start = start
+exports.start = start;
